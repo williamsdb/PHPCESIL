@@ -1,0 +1,35 @@
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	</head>
+	<body style="background: #000; color: #fff;">
+		<div id="history">
+			<code>
+			C.E.S.I.L for PHP<br/>
+			<br/>
+			<br/>
+			&copy;2019 Neil Thompson<br/>
+			<br/>
+			</code>
+		</div>
+		<p><code>ok></code><input type="text" id="cmd" style="background: #000; color: #fff; border: none;"></p>
+		<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+		<script>
+			$('#cmd').focus();
+			$('#cmd').on('keydown', function(e) {
+				if (e.which === 13) {
+					$('#history').append('<code>ok>'+$('#cmd').val().toLowerCase()+'</code><br/>');
+					$.ajax({
+				    url: "http://localhost:8080/cesil.php?cmd="+$('#cmd').val().toLowerCase(),
+						dataType: 'html',
+						success: function(html) {
+							$('#history').append('<code>'+html+'<code><br/>');
+							$('#cmd').val('');
+						}
+					});
+					return false;
+				}
+			});
+		</script>
+	</body>
+</html>

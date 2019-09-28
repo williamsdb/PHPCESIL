@@ -1,0 +1,6 @@
+a:10:{i:0;a:3:{s:5:"label";s:0:"";s:3:"cmd";s:4:"LOAD";s:4:"goto";s:2:"0
+";}i:1;a:3:{s:5:"label";s:4:"LOOP";s:3:"cmd";s:5:"STORE";s:4:"goto";s:5:"TOTAL";}i:2;a:3:{s:5:"label";s:0:"";s:3:"cmd";s:2:"IN";s:4:"goto";s:0:"";}i:3;a:3:{s:5:"label";s:0:"";s:3:"cmd";s:5:"JINEG";s:4:"goto";s:5:"DONE
+";}i:4;a:3:{s:5:"label";s:0:"";s:3:"cmd";s:3:"ADD";s:4:"goto";s:6:"TOTAL
+";}i:5;a:3:{s:5:"label";s:0:"";s:3:"cmd";s:4:"JUMP";s:4:"goto";s:5:"LOOP
+";}i:6;a:3:{s:5:"label";s:0:"";s:3:"cmd";s:4:"LOAD";s:4:"goto";s:6:"TOTAL
+";}i:7;a:3:{s:5:"label";s:0:"";s:3:"cmd";s:3:"OUT";s:4:"goto";s:0:"";}i:8;a:3:{s:5:"label";s:0:"";s:3:"cmd";s:4:"LINE";s:4:"goto";s:0:"";}i:9;a:3:{s:5:"label";s:0:"";s:3:"cmd";s:4:"HALT";s:4:"goto";s:0:"";}}
