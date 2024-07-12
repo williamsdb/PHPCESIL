@@ -1,9 +1,10 @@
 <?php
 
-	function process_command($line, $cmd, $data){
+	function process_command($line, $cmd, $data, $debug=FALSE){
 
 		$output = '';
 		$cmds = array('LOAD', 'STORE', 'IN', 'ADD', 'SUBTRACT', 'MULTIPLY', 'DIVIDE', 'JUMP', 'JIZERO', 'JINEG', 'PRINT', 'OUT', 'LINE', 'HALT');
+		$cmdsp = array('LOAD', 'STORE', 'ADD', 'SUBTRACT', 'MULTIPLY', 'DIVIDE', 'JUMP', 'JIZERO', 'JINEG', 'PRINT');
 
 		switch ($cmd){
 			case 'exit':
@@ -11,15 +12,15 @@
 				break;
 			case 'load':
 				if (strpos($line,' ')===false){
-					return array($data, 'You must enter a filename'.PHP_EOL);
+					return array($data, 'You must enter a filename'.PHP_EOL, $debug);
 				}else{
 					$filename = trim(substr($line, strpos($line,' ')+1));
-					return array(load($filename),'');
+					return array(load($filename),'', $debug);
 				}
 				break;
 			case 'save':
 				if (strpos($line,' ')===false){
-					return array($data, 'You must enter a filename'.PHP_EOL);
+					return array($data, 'You must enter a filename'.PHP_EOL, $debug);
 				}else{
 					$filename = trim(substr($line, strpos($line,' ')+1));
 					save($filename, serialize($data));
@@ -174,6 +175,7 @@
 				$output .=  'load - load a previously saved file'.PHP_EOL;
 				$output .=  'new - create a new program'.PHP_EOL;
 				$output .=  'run - execute a loaded CESIL script'.PHP_EOL;
+				$output .=  'dir - list all the script available'.PHP_EOL;
 				$output .=  'save - save a CESIL file'.PHP_EOL;
 				$output .=  'Valid CESIL commands are: ';
 				for ($i = 0; $i<count($cmds); $i++){
@@ -188,21 +190,22 @@
 				echo 'Command not recognised'.PHP_EOL;
 		}
 		
-		return array($data,$output);
+		return array($data, $output, $debug);
 		
 	}
 
 	function run($data, $debug=FALSE){
 		// set the accumulator
 		$acc = 0;
+		$value = [];
 		$i = 0;
 
 		// run the script
-		while(TRUE && $i < count($data)){
+		while($i < count($data)){
 
 			if ($debug) echo 'Executing line '.$i.' '.$data[$i]['label']."\t".$data[$i]['cmd']."\t".$data[$i]['goto'].PHP_EOL;
 
-			switch ($data[$i]['cmd']){
+			switch (strtoupper($data[$i]['cmd'])){
 				case 'LOAD':
 					if (is_numeric($data[$i]['goto'])){
 						$acc = $data[$i]['goto'];
@@ -322,9 +325,13 @@
 				case 'PRINT':
 					// is it a variable?
 					if (isset($value[$data[$i]['goto']])){
-						echo $value[$data[$i]['goto']];
+						echo $value[$data[$i]['goto']].PHP_EOL;
 					}else{
-						echo $data[$i]['goto'];					
+						if (substr($data[$i]['goto'],0,1) == '"'){
+							echo substr(trim($data[$i]['goto']),1,strlen(trim($data[$i]['goto']))-2);
+						}else{
+							echo trim($data[$i]['goto']);
+						}
 					}
 					break;
 				case 'OUT':
@@ -342,8 +349,11 @@
 	}
 
 	function load($filename, $interactive=TRUE){
+
 		$data = '';
-		if ($data = file_get_contents('files/'.$filename.'.csl', $data)){
+
+		if (file_exists('/Users/neilthompson/Development/PHPCESIL/files/'.$filename.'.csl')){
+			$data = file_get_contents('files/'.$filename.'.csl', $data);
 			$data = unserialize($data);
 			
 			// check that this is actually a CESIL file
@@ -354,9 +364,7 @@
 				if ($interactive) echo 'File '.$filename.' not a valid CESIL file.'.PHP_EOL;
 				return '';
 			}
-
-
-}else{
+		}else{
 			echo 'File not loaded'.PHP_EOL;
 		}
 	}
@@ -370,8 +378,11 @@
 	}
 
 	function check_jump($label,$data){
+
 		for ($i = 0; $i<count($data); $i++){
-			if ($data[$i]['label']==$label) return $i;
+			if (strtoupper($data[$i]['label'])==strtoupper(trim($label))){
+				return $i;
+			} 
 		}				
 
 		return 0;
